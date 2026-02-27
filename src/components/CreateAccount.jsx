@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getAuth , createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "./firebase"; 
 import { useNavigate } from "react-router-dom";
 
 
@@ -9,16 +10,24 @@ function CreateAccount() {
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
-    const [studentid, setStudentid] = useState("");
+    const [Userid, setUserid] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-           await createUserWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            console.log(user);
+         const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const ADMIN_EMAILS = ["admin1@std.edu.eg","admin2@std.edu.eg","admin3@std.edu.eg"]; 
+        const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
+        const uid = cred.user.uid;
+        await setDoc(doc(db, "users", uid), {
+        name: name,
+        Userid: Userid,
+        email: email,
+        role: role,
+        });
+        console.log(cred.user);
             navigate("/");
             alert("USER REGESTERD SUCCESSFULLY!");
         }
@@ -44,7 +53,7 @@ function CreateAccount() {
 
                             <div className="col-md-12">
                                 <label htmlFor="studentid" className="form-label colorgray">Student ID</label>
-                                <input type="text" className="form-control" id="studentid" placeholder="123451278" required value={studentid} onChange={(e) => setStudentid(e.target.value)} />
+                                <input type="text" className="form-control" id="studentid" placeholder="123451278" required value={Userid} onChange={(e) => setUserid(e.target.value)} />
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="inputEmail" className="form-label colorgray">University Email</label>

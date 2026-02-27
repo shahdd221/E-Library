@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebase"
+import { useNavigate } from "react-router-dom"
 
 
 function Login() {
@@ -12,10 +14,16 @@ function Login() {
    const handleLogin = async (e) => {
     e.preventDefault();
     try { 
-    await signInWithEmailAndPassword(auth, email, password);
-    const user = auth.currentUser;
-    console.log(user);
-    alert("USER LOGGED IN SUCCESSFULLY!");
+    const cred=await signInWithEmailAndPassword(auth, email, password);
+                console.log(cred.user);
+                const uid=cred.user.uid;
+                const snap =await getDoc(doc(db,"users",uid));
+                const role=snap.data().role;
+                if(role=="admin"){
+                   alert("ADMIN LOGGED IN SUCCESSFULLY!");
+    }else{
+        alert("USER LOGGED IN SUCCESSFULLY")
+    }
   }
    catch (error) {
     alert("INVALID INFORMATION!");
