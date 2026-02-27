@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getAuth , createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase";
+import { useNavigate } from "react-router-dom";
 
 
 function CreateAccount() {
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [studentid, setStudentid] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(name,studentid,email, password);
-        setName("");
-        setStudentid("");
-        setEmail("");
-        setPassword("");
+        try{
+           await createUserWithEmailAndPassword(auth, email, password);
+            const user = auth.currentUser;
+            console.log(user);
+            navigate("/");
+            alert("USER REGESTERD SUCCESSFULLY!");
+        }
+        catch (error){
+            alert("INVALID INFORMATION!");
+        }
     }
 
 

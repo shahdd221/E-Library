@@ -1,7 +1,7 @@
 .bg-img{
     background-image: 
     linear-gradient(rgba(65, 41, 28, 0.6),rgba(80, 57, 28, 0.6)),
-    url(./imges/library.png);
+    url(./images/library.png);
     background-size: cover;
     background-position: center;
     
