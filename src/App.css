@@ -1,1 +1,21 @@
+.bg-img{
+    background-image: 
+    linear-gradient(rgba(65, 41, 28, 0.6),rgba(80, 57, 28, 0.6)),
+    url(./imges/library.png);
+    background-size: cover;
+    background-position: center;
+    
+}
+.round{
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
 
+@media (min-width:700px) {
+
+
+    .round{
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 20px;
+    }
+}    
