@@ -23,9 +23,7 @@ function CreateAccount() {
     password === confirmPassword;
 
   const showConfirmInvalid =
-    confirmTouched &&
-    confirmPassword.length > 0 &&
-    password !== confirmPassword;
+    confirmTouched && confirmPassword.length > 0 && password !== confirmPassword;
 
   const showConfirmValid = confirmTouched && doPasswordsMatch;
 
@@ -37,31 +35,19 @@ function CreateAccount() {
     if (password !== confirmPassword) return;
 
     try {
-      const cred = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      const ADMIN_EMAILS = [
-        "admin1@std.edu.eg",
-        "admin2@std.edu.eg",
-        "admin3@std.edu.eg",
-      ];
-
-      const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
-
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
       const uid = cred.user.uid;
 
-      await setDoc(doc(db, "users", uid), {
+      await setDoc(doc(db, "students", uid), {
         name: name,
         Userid: Userid,
         email: email,
-        role: role,
+        role: "student",
       });
 
+      console.log(cred.user);
       navigate("/");
-      alert("USER REGISTERED SUCCESSFULLY!");
+      alert("USER REGESTERD SUCCESSFULLY!");
     } catch (error) {
       alert("INVALID INFORMATION!");
     }
@@ -72,9 +58,7 @@ function CreateAccount() {
       <div className="container mt-5 mt-md-0 d-flex justify-content-center align-items-center min-vh-100">
         <div className="col-md-10 form bg-white rounded-4 mb-4 border-0 p-md-0 shadow m-2 d-md-flex m-md-0 d-flex flex-column flex-md-row-reverse">
           <div className="col-md-7 px-md-5 py-2 px-2 ">
-            <h3 className="fw-bolder px-4 pt-4">
-              Create Your Library Account
-            </h3>
+            <h3 className="fw-bolder px-4 pt-4">Create Your Library Account</h3>
             <p className="px-4">
               Please use your official university credentials to register for
               full access.
@@ -127,10 +111,7 @@ function CreateAccount() {
               </div>
 
               <div className="col-md-12 position-relative">
-                <label
-                  htmlFor="password"
-                  className="form-label w-100 text-start"
-                >
+                <label htmlFor="password" className="form-label w-100 text-start">
                   Password
                 </label>
 
@@ -145,9 +126,7 @@ function CreateAccount() {
                 />
 
                 <i
-                  className={`fa-solid ${
-                    showPassword ? "fa-eye-slash" : "fa-eye"
-                  }`}
+                  className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
                   onClick={() => setShowPassword(!showPassword)}
                   style={{
                     position: "absolute",
@@ -170,11 +149,7 @@ function CreateAccount() {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   className={`form-control pe-5 ${
-                    showConfirmInvalid
-                      ? "is-invalid"
-                      : showConfirmValid
-                      ? "is-valid"
-                      : ""
+                    showConfirmInvalid ? "is-invalid" : showConfirmValid ? "is-valid" : ""
                   }`}
                   id="confirmPassword"
                   placeholder="******"
@@ -188,9 +163,7 @@ function CreateAccount() {
                   className={`fa-solid ${
                     showConfirmPassword ? "fa-eye-slash" : "fa-eye"
                   }`}
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   style={{
                     position: "absolute",
                     right: "25px",
@@ -201,15 +174,11 @@ function CreateAccount() {
                 />
 
                 {showConfirmInvalid && (
-                  <div className="invalid-feedback">
-                    Passwords do not match.
-                  </div>
+                  <div className="invalid-feedback">Passwords do not match.</div>
                 )}
 
                 {showConfirmValid && (
-                  <div className="valid-feedback">
-                    Passwords match
-                  </div>
+                  <div className="valid-feedback">Passwords match</div>
                 )}
               </div>
 
@@ -222,10 +191,7 @@ function CreateAccount() {
 
             <div className="border-top m-4 p-3 text-center">
               Already have an account?{" "}
-              <Link
-                to="/"
-                className="text-decoration-none fw-bold brown"
-              >
+              <Link to="/" className="text-decoration-none fw-bold brown">
                 Log in here
               </Link>
             </div>
@@ -234,9 +200,7 @@ function CreateAccount() {
           <div className="py-3 round col-md-5 bg-img d-flex flex-column align-items-baseline ">
             <div className="container p-4 mb-auto">
               <i className="fa-solid fa-book-open text-white fa-2x mt-5 mb-4"></i>
-              <h4 className="text-white fw-bold mb-4">
-                Join the Digital Archive
-              </h4>
+              <h4 className="text-white fw-bold mb-4">Join the Digital Archive</h4>
               <p className="text-white fw-light">
                 Unlock instant access to over 2 million journals, digital
                 manuscripts, and academic textbooks.
