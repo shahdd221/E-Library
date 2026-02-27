@@ -34,8 +34,8 @@ function CreateAccount() {
 
                 <div className="col-md-10 form bg-white rounded-4 mb-4 border-0 p-md-0 shadow m-2 d-md-flex m-md-0 d-flex flex-column flex-md-row-reverse">
                     <div className="col-md-7 px-md-5 py-2 px-2 ">
-                        <h3 className="darkorange fw-bolder px-4 pt-4">Create Your Library Account</h3>
-                        <p className="colorgray px-4">Please use your official university credentials to register for full access.</p>
+                        <h3 className="fw-bolder px-4 pt-4">Create Your Library Account</h3>
+                        <p className="px-4">Please use your official university credentials to register for full access.</p>
                         <form onSubmit={handleSubmit} className="row g-3 mb-4 px-4">
                             <div className="col-md-12">
                                 <label htmlFor="name" className="form-label colorgray">Full Name </label>
@@ -43,15 +43,15 @@ function CreateAccount() {
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="inputEmail4" className="form-label colorgray">Student ID</label>
+                                <label htmlFor="studentid" className="form-label colorgray">Student ID</label>
                                 <input type="text" className="form-control" id="studentid" placeholder="123451278" required value={studentid} onChange={(e) => setStudentid(e.target.value)} />
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="inputEmail4" className="form-label colorgray">University Email</label>
+                                <label htmlFor="inputEmail" className="form-label colorgray">University Email</label>
                                 <input type="email" className="form-control" id="inputEmail" placeholder="12345@std.edu.eg" required value={email} onChange={(e) => setEmail(e.target.value)} />
                             </div>
                             <div className="col-md-12 mb-4 text-end">
-                                <label htmlFor="inputEmail4" className="form-label w-100 text-start ">Password</label>
+                                <label htmlFor="password" className="form-label w-100 text-start ">Password</label>
                                 <input type="password" className="form-control" id="password" placeholder="******" required value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
 
