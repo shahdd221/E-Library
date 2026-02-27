@@ -4,6 +4,7 @@ import Login from './login';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from './Layout';
 import CreateAccount from './CreateAccount'
+import ForgetPassword from './ForgetPassword';
 
 const router = createBrowserRouter([
   {
@@ -11,6 +12,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {path: "/create-account", element: <CreateAccount />},
+      { path: "/forgetPassword", element: <ForgetPassword /> },
       { path: "", element: <Login /> },
       
     ],

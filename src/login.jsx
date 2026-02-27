@@ -33,7 +33,7 @@ function Login() {
                             <div className="col-md-12 mb-4 text-end">
                                 <label htmlFor="inputEmail4" className="form-label w-100 text-start ">Password</label>
                                 <input type="password" className="form-control" id="password" placeholder="******" required value={password} onChange={(e)=> setPassword(e.target.value)} />
-                                <button className="border-0 bg-transparent fa-xs mt-4">Forgot password?</button>
+                                <Link to='/forgetPassword' className="border-0 bg-transparent fa-xs mt-4">Forgot password?</Link>
                             </div>
 
                             <div className="col-12 mx-auto">
