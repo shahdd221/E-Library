@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase"
 import { useNavigate } from "react-router-dom"
 
@@ -15,8 +15,16 @@ function Login() {
     e.preventDefault();
     try { 
     const cred = await signInWithEmailAndPassword(auth, email, password);
+    const userRef = doc(db, "users", cred.user.uid);
+const userSnap = await getDoc(userRef);
       console.log(cred.user);
+         if (userSnap.exists() && userSnap.data().role === "admin") {
+      alert("ADMIN LOGGED IN SUCCESSFULLY!");
+      // navigate("/admin") لو عندك صفحة أدمن
+    } else {
       alert("USER LOGGED IN SUCCESSFULLY!");
+      // navigate("/home")
+    }
      
   }
    catch (error) {
