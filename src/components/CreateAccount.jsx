@@ -18,14 +18,12 @@ function CreateAccount() {
         e.preventDefault();
         try{
          const cred = await createUserWithEmailAndPassword(auth, email, password);
-        const ADMIN_EMAILS = ["admin1@std.edu.eg","admin2@std.edu.eg","admin3@std.edu.eg"]; 
-        const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
         const uid = cred.user.uid;
-        await setDoc(doc(db, "users", uid), {
+        await setDoc(doc(db, "students", uid), {
         name: name,
         Userid: Userid,
         email: email,
-        role: role,
+        role: 'student',
         });
         console.log(cred.user);
             navigate("/");
