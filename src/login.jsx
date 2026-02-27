@@ -27,11 +27,11 @@ function Login() {
                         <form onSubmit={handleSubmit} className="row g-3 mb-4 px-4 ">
 
                             <div className="col-md-12 mb-3">
-                                <label htmlFor="inputEmail4" className="form-label ">Institutional Email </label>
+                                <label htmlFor="Email" className="form-label ">Institutional Email </label>
                                 <input type="email" className="form-control" id="Email" placeholder="12345@std.edu.eg" required value={email} onChange={(e)=> setEmail(e.target.value)} />
                             </div>
                             <div className="col-md-12 mb-4 text-end">
-                                <label htmlFor="inputEmail4" className="form-label w-100 text-start ">Password</label>
+                                <label htmlFor="password" className="form-label w-100 text-start ">Password</label>
                                 <input type="password" className="form-control" id="password" placeholder="******" required value={password} onChange={(e)=> setPassword(e.target.value)} />
                                 <Link to='/forgetPassword' className="border-0 bg-transparent fa-xs mt-4">Forgot password?</Link>
                             </div>

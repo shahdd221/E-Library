@@ -33,15 +33,15 @@ function CreateAccount() {
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="inputEmail4" className="form-label colorgray">Student ID</label>
+                                <label htmlFor="studentid" className="form-label colorgray">Student ID</label>
                                 <input type="text" className="form-control" id="studentid" placeholder="123451278" required value={studentid} onChange={(e) => setStudentid(e.target.value)} />
                             </div>
                             <div className="col-md-12">
-                                <label htmlFor="inputEmail4" className="form-label colorgray">University Email</label>
+                                <label htmlFor="inputEmail" className="form-label colorgray">University Email</label>
                                 <input type="email" className="form-control" id="inputEmail" placeholder="12345@std.edu.eg" required value={email} onChange={(e) => setEmail(e.target.value)} />
                             </div>
                             <div className="col-md-12 mb-4 text-end">
-                                <label htmlFor="inputEmail4" className="form-label w-100 text-start ">Password</label>
+                                <label htmlFor="password" className="form-label w-100 text-start ">Password</label>
                                 <input type="password" className="form-control" id="password" placeholder="******" required value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
 

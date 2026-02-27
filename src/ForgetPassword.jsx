@@ -23,7 +23,7 @@ function ForgetPassword() {
                         <form onSubmit={handleSubmit} className="row g-3 mb-4 px-4 ">
 
                             <div className="col-md-12 mb-3">
-                                <label htmlFor="inputEmail4" className="form-label ">Institutional Email </label>
+                                <label htmlFor="Email" className="form-label ">Institutional Email </label>
                                 <input type="email" className="form-control" id="Email" placeholder="12345@std.edu.eg" required value={email} onChange={(e)=> setEmail(e.target.value)} />
                             </div>
 
