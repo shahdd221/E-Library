@@ -1,13 +1,34 @@
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "./firebase";
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
+
 
 function ForgetPassword() {
     
     const [email , setEmail] = useState("");
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(email);
+        try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Reset link sent! Please check your email.");
         setEmail("");
+    } catch (error) {
+      console.log(error.code, error.message);
+
+    
+      if (error.code === "auth/user-not-found") {
+        alert("This email address is not registered.");
+      } else if (error.code === "auth/invalid-email") {
+        alert("Please enter a valid email address.");
+      } else if (error.code === "auth/too-many-requests") {
+        alert("Too many attempts. Please try again later.");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    }
+
     }
 
     return (
@@ -28,10 +49,10 @@ function ForgetPassword() {
                             </div>
 
                             <div className="col-12 mx-auto">
-                                <button className="bg-dark p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 ">Send Reset Link <i className='fa-solid fa-paper-plane ms-1'></i></button>
+                                <button className=" p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 bg-brown">Send Reset Link <i className='fa-solid fa-paper-plane ms-1'></i></button>
                             </div>
                         </form>
-                        <div className='border-top m-4 p-3 text-center d-flex align-items-baseline justify-content-center'><Link to="/" className='text-decoration-none fw-bold'><i className='fa-solid fa-arrow-left me-1'></i>Back to Login</Link></div>
+                        <div className='border-top m-4 p-3 text-center d-flex align-items-baseline justify-content-center'><Link to="/" className='text-decoration-none fw-bold brown'><i className='fa-solid fa-arrow-left me-1 brown'></i>Back to Login</Link></div>
                     </div>
                 </div>
             </div>

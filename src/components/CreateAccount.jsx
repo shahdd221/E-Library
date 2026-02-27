@@ -57,10 +57,10 @@ function CreateAccount() {
 
 
                             <div className="col-12 mx-auto">
-                                <button className="bg-dark p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 ">Create Account</button>
+                                <button className="p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 bg-brown">Create Account</button>
                             </div>
                         </form>
-                        <div className='border-top m-4 p-3 text-center'>Already have an account? <Link to="/" className='text-decoration-none fw-bold'>Log in here</Link></div>
+                        <div className='border-top m-4 p-3 text-center'>Already have an account? <Link to="/" className='text-decoration-none fw-bold brown'>Log in here</Link></div>
                     </div>
                     <div className="py-3 round col-md-5 bg-img d-flex flex-column align-items-baseline ">
                         <div className="container p-4 mb-auto">
