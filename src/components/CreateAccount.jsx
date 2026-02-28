@@ -46,36 +46,38 @@ if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
         if (password !== confirmPassword) return;
 
         try {
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
-             await sendEmailVerification(cred.user);
-            const uid = cred.user.uid;
-            
-            await setDoc(doc(db, "students", uid), {
-                name: name,
-                Userid: Userid,
-                email: email,
-                role: "student",
-            });
+  const cred = await createUserWithEmailAndPassword(auth, cleanedEmail, password);
 
-            console.log(cred.user);
-            navigate("/");
-            Swal.fire({
-                title: "Done!",
-                text: "USER REGESTERD SUCCESSFULLY!",
-                icon: "success",
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#633a19"
-            })
-        } catch (error) {
-            Swal.fire({
-                title: "INVALID INFORMATION!",
-                text: "Try Again",
-                icon: "warning",
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#633a19"
-            })
-        }
-    };
+  await setDoc(doc(db, "users", cred.user.uid), {
+    name,
+    Userid,
+    email: cleanedEmail,
+    role: "student",
+  });
+
+  await sendEmailVerification(cred.user);
+
+  await auth.signOut();
+
+  Swal.fire({
+    title: "Verify Your Email",
+    text: "A verification link has been sent to your university email. Please verify your account before logging in.",
+    icon: "info",
+    confirmButtonColor: "#633a19",
+  });
+
+  navigate("/");
+} catch (error) {
+  console.log(error);
+  Swal.fire({
+    title: "INVALID INFORMATION!",
+    text: error.message,
+    icon: "warning",
+    confirmButtonText: "Ok",
+    confirmButtonColor: "#633a19",
+  });
+}
+    }
 
     return (
         <>
