@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getAuth , createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase";
+import { useNavigate } from "react-router-dom";
 
 
 function CreateAccount() {
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [studentid, setStudentid] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(name,studentid,email, password);
-        setName("");
-        setStudentid("");
-        setEmail("");
-        setPassword("");
+        try{
+           await createUserWithEmailAndPassword(auth, email, password);
+            const user = auth.currentUser;
+            console.log(user);
+            navigate("/");
+            alert("USER REGESTERD SUCCESSFULLY!");
+        }
+        catch (error){
+            alert("INVALID INFORMATION!");
+        }
     }
 
 
@@ -24,8 +34,8 @@ function CreateAccount() {
 
                 <div className="col-md-10 form bg-white rounded-4 mb-4 border-0 p-md-0 shadow m-2 d-md-flex m-md-0 d-flex flex-column flex-md-row-reverse">
                     <div className="col-md-7 px-md-5 py-2 px-2 ">
-                        <h3 className="darkorange fw-bolder px-4 pt-4">Create Your Library Account</h3>
-                        <p className="colorgray px-4">Please use your official university credentials to register for full access.</p>
+                        <h3 className="fw-bolder px-4 pt-4">Create Your Library Account</h3>
+                        <p className="px-4">Please use your official university credentials to register for full access.</p>
                         <form onSubmit={handleSubmit} className="row g-3 mb-4 px-4">
                             <div className="col-md-12">
                                 <label htmlFor="name" className="form-label colorgray">Full Name </label>
@@ -47,10 +57,10 @@ function CreateAccount() {
 
 
                             <div className="col-12 mx-auto">
-                                <button className="bg-dark p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 ">Create Account</button>
+                                <button className="p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 bg-brown">Create Account</button>
                             </div>
                         </form>
-                        <div className='border-top m-4 p-3 text-center'>Already have an account? <Link to="/" className='text-decoration-none fw-bold'>Log in here</Link></div>
+                        <div className='border-top m-4 p-3 text-center'>Already have an account? <Link to="/" className='text-decoration-none fw-bold brown'>Log in here</Link></div>
                     </div>
                     <div className="py-3 round col-md-5 bg-img d-flex flex-column align-items-baseline ">
                         <div className="container p-4 mb-auto">

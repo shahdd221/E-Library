@@ -1,10 +1,11 @@
-import logo from './logo.svg';
+
 import './App.css';
-import Login from './login';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Layout from './Layout';
-import CreateAccount from './CreateAccount'
-import ForgetPassword from './ForgetPassword';
+import Login from "./components/login";
+import Layout from "./components/Layout";
+import CreateAccount from "./components/CreateAccount";
+import ForgetPassword from './components/ForgetPassword';
+
 
 const router = createBrowserRouter([
   {
