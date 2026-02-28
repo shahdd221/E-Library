@@ -19,7 +19,7 @@ function Login() {
         e.preventDefault();
         const cleanedEmail = email.trim().toLowerCase();
         
-        if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
+        if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")&& !cleanedEmail.endsWith(".com")) {
           Swal.fire({
             title: "Invalid Email",
             text: "Please use your university email (.edu or .edu.eg)",
@@ -31,7 +31,7 @@ function Login() {
         try {
              
             const cred = await signInWithEmailAndPassword(auth, email, password);
-             if (!cred.user.emailVerified) {
+            /* if (!cred.user.emailVerified) {
       Swal.fire({
         title: "Email not verified",
         text: "Please verify your university email first.",
@@ -39,15 +39,15 @@ function Login() {
         confirmButtonColor: "#633a19",
       });
       return;
-    }
-            const userRef = doc(db, "users", cred.user.uid);
+    }*/
+                    const userRef = doc(db, "students", cred.user.uid);
             const userSnap = await getDoc(userRef);
             console.log(cred.user);
             if (userSnap.exists() && userSnap.data().role === "admin") {
 
                 Swal.fire({
                     title: "Done!",
-                    text: "ADMIN LOGGED IN SUCCESSFULLY!",
+                    text: "LOGGED IN SUCCESSFULLY!",
                     icon: "success",
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#633a19"
@@ -55,7 +55,7 @@ function Login() {
             } else {
                 Swal.fire({
                     title: "Done!",
-                    text: "USER LOGGED IN SUCCESSFULLY!",
+                    text: " LOGGED IN SUCCESSFULLY!",
                     icon: "success",
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#633a19"
