@@ -16,6 +16,10 @@
 .bg-brown {
     background-color: rgb(99, 58, 25);
 }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
 
 .brown {
     color: #633a19;

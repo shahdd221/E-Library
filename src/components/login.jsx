@@ -89,7 +89,7 @@ function Login() {
                                     style={{
                                         position: "absolute",
                                         right: "30px",
-                                        top: "43%",
+                                        top: "50%",
                                         cursor: "pointer",
                                         color: "#6c757d",
                                     }}
