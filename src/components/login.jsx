@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase"
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2';
 
 
 function Login() {
+
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,14 +18,28 @@ function Login() {
         e.preventDefault();
         try {
             const cred = await signInWithEmailAndPassword(auth, email, password);
+            const userRef = doc(db, "users", cred.user.uid);
+            const userSnap = await getDoc(userRef);
             console.log(cred.user);
-            Swal.fire({
-                title: "Done!",
-                text: "USER LOGGED IN SUCCESSFULLY!",
-                icon: "success",
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#633a19"
-            })
+            if (userSnap.exists() && userSnap.data().role === "admin") {
+
+                Swal.fire({
+                    title: "Done!",
+                    text: "ADMIN LOGGED IN SUCCESSFULLY!",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "#633a19"
+                })
+            } else {
+                Swal.fire({
+                    title: "Done!",
+                    text: "USER LOGGED IN SUCCESSFULLY!",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "#633a19"
+                })
+
+            }
 
         }
         catch (error) {
@@ -38,6 +53,7 @@ function Login() {
             })
         }
     };
+
 
     return (
         <>
@@ -67,7 +83,7 @@ function Login() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                 <i
+                                <i
                                     className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
                                     onClick={() => setShowPassword(!showPassword)}
                                     style={{
