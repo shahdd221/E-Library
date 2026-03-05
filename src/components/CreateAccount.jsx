@@ -48,7 +48,7 @@ if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
         try {
   const cred = await createUserWithEmailAndPassword(auth, cleanedEmail, password);
 
-  await setDoc(doc(db, "users", cred.user.uid), {
+  await setDoc(doc(db, "students", cred.user.uid), {
     name,
     Userid,
     email: cleanedEmail,
