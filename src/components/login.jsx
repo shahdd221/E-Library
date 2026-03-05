@@ -19,7 +19,7 @@ function Login() {
         e.preventDefault();
         const cleanedEmail = email.trim().toLowerCase();
         
-        if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
+        if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg") ) {
           Swal.fire({
             title: "Invalid Email",
             text: "Please use your university email (.edu or .edu.eg)",
