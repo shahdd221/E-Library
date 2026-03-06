@@ -37,7 +37,13 @@ function Login() {
         confirmButtonText: "Ok",
         confirmButtonColor: "#633a19",
       });
-      navigate("admin/books");
+      if (adminSnap.exists()) {
+        localStorage.setItem("role", "admin");
+        navigate("/admin/books");
+      } else {
+        localStorage.setItem("role", "user");
+        navigate("/home");
+      }
     } catch (error) {
       console.log(error.code, error.message);
       Swal.fire({
