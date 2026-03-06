@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import Swal from "sweetalert2";
@@ -30,41 +30,54 @@ function CreateAccount() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+const cleanedEmail = email.trim().toLowerCase();
 
+if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
+  Swal.fire({
+    title: "Invalid Email",
+    text: "Please use your university email (.edu or .edu.eg)",
+    icon: "error",
+    confirmButtonColor: "#633a19",
+  });
+  return;
+}
         setConfirmTouched(true);
 
         if (password !== confirmPassword) return;
 
         try {
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
-            const uid = cred.user.uid;
+  const cred = await createUserWithEmailAndPassword(auth, cleanedEmail, password);
 
-            await setDoc(doc(db, "students", uid), {
-                name: name,
-                Userid: Userid,
-                email: email,
-                role: "student",
-            });
+  await setDoc(doc(db, "students", cred.user.uid), {
+    name,
+    Userid,
+    email: cleanedEmail,
+    role: "student",
+  });
 
-            console.log(cred.user);
-            navigate("/");
-            Swal.fire({
-                title: "Done!",
-                text: "USER REGESTERD SUCCESSFULLY!",
-                icon: "success",
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#633a19"
-            })
-        } catch (error) {
-            Swal.fire({
-                title: "INVALID INFORMATION!",
-                text: "Try Again",
-                icon: "warning",
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#633a19"
-            })
-        }
-    };
+  await sendEmailVerification(cred.user);
+
+  await auth.signOut();
+
+  Swal.fire({
+    title: "Verify Your Email",
+    text: "A verification link has been sent to your university email. Please verify your account before logging in.",
+    icon: "info",
+    confirmButtonColor: "#633a19",
+  });
+
+  navigate("/");
+} catch (error) {
+  console.log(error);
+  Swal.fire({
+    title: "INVALID INFORMATION!",
+    text: error.message,
+    icon: "warning",
+    confirmButtonText: "Ok",
+    confirmButtonColor: "#633a19",
+  });
+}
+    }
 
     return (
         <>
@@ -120,6 +133,8 @@ function CreateAccount() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu(\.eg)?$"
+  title="Please enter a valid university email (.edu or .edu.eg)"
                                 />
                             </div>
 
@@ -143,7 +158,7 @@ function CreateAccount() {
                                     onClick={() => setShowPassword(!showPassword)}
                                     style={{
                                         position: "absolute",
-                                        right: "50px",
+                                        right: "30px",
                                         top: "65%",
                                         cursor: "pointer",
                                         color: "#6c757d",
@@ -177,7 +192,7 @@ function CreateAccount() {
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                     style={{
                                         position: "absolute",
-                                        right: "50px",
+                                        right: "30px",
                                         top: "43%",
                                         cursor: "pointer",
                                         color: "#6c757d",

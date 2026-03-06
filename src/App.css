@@ -16,6 +16,10 @@
 .bg-brown {
     background-color: rgb(99, 58, 25);
 }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
 
 .brown {
     color: #633a19;
@@ -64,4 +68,72 @@ label {
         border-top-left-radius: 20px;
     }
 
+}
+
+
+
+.library-hero{
+  min-height: 360px;
+}
+
+
+.library-search{
+  max-width: 880px;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(6px);
+}
+
+
+.library-search input::placeholder{
+  color: rgba(255,255,255,0.75);
+}
+
+
+.library-card-img{
+  height: 210px;
+  background: rgba(158, 115, 74, 0.05);
+}
+
+
+.object-fit-cover{
+  object-fit: cover;
+}
+
+
+.hover-card{
+  transition-duration: 0.3s;
+}
+.hover-card:hover{
+  transform: translateY(-5px);
+}
+.footer-hover{
+    transition: 0.3s;
+}
+
+.footer-hover:hover{
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.15);
+}
+.stat-box{
+    transition: 0.3s;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.stat-box:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.view-collection{
+    color:#633a19;
+    padding:6px 12px;
+    border-radius:6px;
+    transition:0.3s;
+}
+
+.view-collection:hover{
+    background-color:rgba(99,58,25,0.1);
+}
+
+.view-collection:active{
+    background-color:rgba(99,58,25,0.2);
 }

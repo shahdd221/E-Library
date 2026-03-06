@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase"
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2';
+import { sendEmailVerification } from "firebase/auth";
 
 
 function Login() {
@@ -16,16 +17,39 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        const cleanedEmail = email.trim().toLowerCase();
+        
+
+        if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg") ) {
+
+          Swal.fire({
+            title: "Invalid Email",
+            text: "Please use your university email (.edu or .edu.eg)",
+            icon: "error",
+            confirmButtonColor: "#633a19",
+          });
+          return;
+        }
         try {
+             
             const cred = await signInWithEmailAndPassword(auth, email, password);
-            const userRef = doc(db, "users", cred.user.uid);
+            /* if (!cred.user.emailVerified) {
+      Swal.fire({
+        title: "Email not verified",
+        text: "Please verify your university email first.",
+        icon: "warning",
+        confirmButtonColor: "#633a19",
+      });
+      return;
+    }*/
+                    const userRef = doc(db, "students", cred.user.uid);
             const userSnap = await getDoc(userRef);
             console.log(cred.user);
             if (userSnap.exists() && userSnap.data().role === "admin") {
 
                 Swal.fire({
                     title: "Done!",
-                    text: "ADMIN LOGGED IN SUCCESSFULLY!",
+                    text: "LOGGED IN SUCCESSFULLY!",
                     icon: "success",
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#633a19"
@@ -33,7 +57,7 @@ function Login() {
             } else {
                 Swal.fire({
                     title: "Done!",
-                    text: "USER LOGGED IN SUCCESSFULLY!",
+                    text: " LOGGED IN SUCCESSFULLY!",
                     icon: "success",
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#633a19"
@@ -70,7 +94,9 @@ function Login() {
 
                             <div className="col-md-12 mb-3">
                                 <label htmlFor="Email" className="form-label ">Institutional Email </label>
-                                <input type="email" className="form-control" id="Email" placeholder="student@university.edu" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <input type="email" className="form-control" id="Email" placeholder="student@university.edu" required value={email} onChange={(e) => setEmail(e.target.value)} 
+                                   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu(\.eg)?$"
+  title="Please enter a valid university email (.edu or .edu.eg)"/>
                             </div>
                             <div className="col-md-12 mb-4 text-end position-relative">
                                 <label htmlFor="password" className="form-label w-100 text-start ">Password</label>
@@ -89,7 +115,7 @@ function Login() {
                                     style={{
                                         position: "absolute",
                                         right: "30px",
-                                        top: "43%",
+                                        top: "48%",
                                         cursor: "pointer",
                                         color: "#6c757d",
                                     }}

@@ -10,9 +10,21 @@ function ForgetPassword() {
   const [email, setEmail] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email);
+      const cleanedEmail = email.trim().toLowerCase();
+
+  if (!cleanedEmail.endsWith(".edu") && !cleanedEmail.endsWith(".edu.eg")) {
+    Swal.fire({
+      title: "Invalid Email",
+      text: "Please use your university email (.edu or .edu.eg)",
+      icon: "error",
+      confirmButtonColor: "#633a19",
+    });
+    return;
+  }
+
+  console.log(cleanedEmail);
     try {
-      await sendPasswordResetEmail(auth, email);
+    await sendPasswordResetEmail(auth, cleanedEmail);
 
       Swal.fire({
         title: "Done!",
