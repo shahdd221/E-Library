@@ -5,6 +5,8 @@ import Layout from "./components/Layout";
 import CreateAccount from "./components/CreateAccount";
 import ForgetPassword from './components/ForgetPassword';
 import DashBoard from './components/DashBoard';
+import LayoutPage from './components/LayoutPage';
+import LibraryHome from './components/LibraryHome';
 
 const router = createBrowserRouter([
   {
@@ -13,10 +15,11 @@ const router = createBrowserRouter([
     children: [
       { path: "/create-account", element: <CreateAccount /> },
       { path: "/forgetPassword", element: <ForgetPassword /> },
-
       { path: "", element: <Login /> },
-      { path: "/DashBoard", element: <DashBoard /> }
-      
+      { path: "/", element: <LayoutPage /> , children:[
+        { path: "/DashBoard", element: <DashBoard /> },
+        { path: "/home", element: <LibraryHome/>  }
+      ] }
 
     ],
   },

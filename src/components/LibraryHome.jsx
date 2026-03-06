@@ -24,7 +24,7 @@ function LibraryHome() {
   return (
     <>
       
-      <div className="bg-img library-hero d-flex align-items-center">
+      <div className="bg-img library-hero d-flex align-items-center mt-5 py-5">
         <div className="container text-center text-white px-3 py-5">
           <h1 className="fw-bolder display-5 mb-3">
             Welcome to the University <br /> Library

@@ -23,12 +23,12 @@ function DashBoard() {
     }
 
     return (
-        <>
+        <div className='my-5 pt-5'>
             <div className='container p-3'>
                 <div className='d-flex flex-column flex-md-row justify-content-between'>
                     <div className='col-md-6'>
                         <h1 className='brown fw-bolder fa-3x '>Admin Dashboard</h1>
-                        <p className='fs-3'>Manage Library Content</p>
+                        <p className='fs-3 brown'>Manage Library Content</p>
                     </div>
                     <button onClick={() => setIsOpen(true)} className='col-md-3 p-2 py-3 rounded-4  border-0 my-3 text-nowrap text-white fw-bold bg-brown shadow hover'><i className='fa-solid fa-plus me-1'></i> Add New Book</button>
                 </div>
@@ -66,9 +66,9 @@ function DashBoard() {
                                 <textarea id="des" type="text" name="Description" className="form-control mb-3" placeholder="Provide a brief summary of the book..." required />
                                 <label htmlFor="img" className="brown">Book Cover Image</label>
                                 <input onChange={(e)=> setImage(e.target.files[0])} id="img" type="file" name="cover" className="form-control mb-3" required />
-                                <div className="d-flex gap-2 mt-5">
-                                    <button type="submit" className="p-2 rounded-3  border-0 text-white fw-bold bh1 w-100 bg-brown hover w-100">Add</button>
-                                    <button type="button" className="btn btn-secondary w-100 hover" onClick={() => setIsOpen(false)}>Cancel</button>
+                                <div className="d-flex gap-2 mt-5 justify-content-end">
+                                    <button type="submit" className="p-2 rounded-3  border-0 text-white fw-bold bg-brown hover col-2 ">Add</button>
+                                    <button type="button" className="btn btn-secondary col-2" onClick={() => setIsOpen(false)}>Cancel</button>
                                 </div>
                             </form>
 
@@ -79,13 +79,13 @@ function DashBoard() {
             }
             <div className='container p-3'>
                 <div className='border p-3 my-3 rounded-4'>
-                    <h5 className='fw-bold border-bottom pb-3 mb-4'>Books Management</h5>
+                    <h5 className='fw-bold border-bottom pb-3 mb-4 brown'>Books Management</h5>
                     <div>
                         {
                             books.length === 0 ? (
                                 <div className="text-center py-4 text-gray-500">
-                                    <i className="fa-solid fa-book mb-3"></i>
-                                    <p className="font-medium">No Books Added</p>
+                                    <i className="fa-solid fa-book mb-3 brown"></i>
+                                    <p className="font-medium brown">No Books Added</p>
                                 </div>
 
                             ) : (
@@ -118,7 +118,7 @@ function DashBoard() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

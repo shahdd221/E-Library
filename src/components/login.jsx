@@ -125,7 +125,7 @@ function Login() {
                             </div>
 
                             <div className="col-12 mx-auto d-flex justify-content-center text-center">
-                                <Link to='/DashBoard' className="text-decoration-none p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 bg-brown shadow hover">Sign In to Library</Link>
+                                <Link to='/home' className="text-decoration-none p-2 py-3 rounded-4  border-0 mb-2 text-nowrap text-white fw-bold bh1 w-100 bg-brown shadow hover">Sign In to Library</Link>
                             </div>
                         </form>
                         <div className='border-top m-4 p-3 text-center'>New to the library? <Link to="/create-account" className='text-decoration-none fw-bold brown hover-links'>Create an account</Link></div>
