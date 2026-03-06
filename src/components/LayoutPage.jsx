@@ -6,11 +6,14 @@ import Footer from './Footer'
 export default function LayoutPage() {
 
   return (
-    <>
+    <div className='d-flex flex-column min-vh-100'>
       <Navbar />
-      <Outlet />
+      <div className='flex-grow-1'>
+        <Outlet />
+      </div>
+      
       <Footer />
       
-    </>
+    </div>
   )
 }
