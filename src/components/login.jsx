@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { sendEmailVerification } from "firebase/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
