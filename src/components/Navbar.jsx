@@ -45,7 +45,7 @@ function Navbar() {
 
             <NavLink
               className="nav-link m-1 text-white hover rounded-5 px-4"
-              to="/books"
+              to="admin/books"
               onClick={() => setIsopen(false)}
             >
               Books
@@ -62,10 +62,10 @@ function Navbar() {
           
               <NavLink
                 className="nav-link m-1 text-white hover rounded-5 px-4"
-                to="/DashBoard"
+                to="/admin/books"
                 onClick={() => setIsopen(false)}
               >
-                Dashboard
+                Books Management
               </NavLink>
             
 

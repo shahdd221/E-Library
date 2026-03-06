@@ -17,14 +17,15 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <ForgetPassword /> },
       { path: "", element: <Login /> },
       { path: "/", element: <LayoutPage /> , children:[
-        { path: "/admin/books", element: <Books /> },
-        { path: "/home", element: <LibraryHome/>  }
+        { path: "admin/books", element: <Books /> },
+        { path: "home", element: <LibraryHome/>  }
       
       ] }
 
     ],
   },
 ]);
+
 
 function App() {
   return (
