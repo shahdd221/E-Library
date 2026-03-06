@@ -4,7 +4,7 @@ import Login from "./components/login";
 import Layout from "./components/Layout";
 import CreateAccount from "./components/CreateAccount";
 import ForgetPassword from './components/ForgetPassword';
-import DashBoard from './components/admin/books';
+import Books from './components/admin/Books';
 import LayoutPage from './components/LayoutPage';
 import LibraryHome from './components/LibraryHome';
 
@@ -17,8 +17,9 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <ForgetPassword /> },
       { path: "", element: <Login /> },
       { path: "/", element: <LayoutPage /> , children:[
-        { path: "/DashBoard", element: <DashBoard /> },
+        { path: "/admin/books", element: <Books /> },
         { path: "/home", element: <LibraryHome/>  }
+      
       ] }
 
     ],

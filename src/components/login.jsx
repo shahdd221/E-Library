@@ -23,10 +23,13 @@ function Login() {
       const userSnap = await getDoc(userRef);
       const adminRef = doc(db, "admins", cred.user.uid);
       const adminSnap = await getDoc(adminRef);
-      if (userSnap.exists()) {
+      /*if (userSnap.exists()) {
         localStorage.setItem("role", userSnap.data().role);
-      }
+      }*/
       console.log(cred.user);
+      console.log("UID:", cred.user.uid);
+      console.log("admin exists:", adminSnap.exists());
+      console.log("user exists:", userSnap.exists());
       await Swal.fire({
         title: "Done!",
         text: "LOGGED IN SUCCESSFULLY!",
@@ -37,10 +40,12 @@ function Login() {
 
        if (adminSnap.exists()) {
          localStorage.setItem("role", "admin");
-         navigate("/home");
+         navigate("/admin/books");
+         return;
        } else {
          localStorage.setItem("role", "user");
-         navigate("/home");
+         navigate("/admin/books");
+         return;
        }
     } catch (error) {
       console.log(error.code, error.message);
