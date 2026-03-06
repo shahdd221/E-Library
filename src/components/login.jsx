@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { sendEmailVerification } from "firebase/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,6 +21,8 @@ function Login() {
 
       const userRef = doc(db, "students", cred.user.uid);
       const userSnap = await getDoc(userRef);
+      const adminRef = doc(db, "admins", cred.user.uid);
+      const adminSnap = await getDoc(adminRef);
       if (userSnap.exists()) {
         localStorage.setItem("role", userSnap.data().role);
       }
@@ -31,7 +35,13 @@ function Login() {
         confirmButtonColor: "#633a19",
       });
 
-      navigate("/home");
+       if (adminSnap.exists()) {
+         localStorage.setItem("role", "admin");
+         navigate("/home");
+       } else {
+         localStorage.setItem("role", "user");
+         navigate("/home");
+       }
     } catch (error) {
       console.log(error.code, error.message);
       Swal.fire({

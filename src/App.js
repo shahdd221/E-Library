@@ -4,7 +4,7 @@ import Login from "./components/login";
 import Layout from "./components/Layout";
 import CreateAccount from "./components/CreateAccount";
 import ForgetPassword from './components/ForgetPassword';
-import DashBoard from './components/DashBoard';
+import DashBoard from './components/admin/books';
 import LayoutPage from './components/LayoutPage';
 import LibraryHome from './components/LibraryHome';
 
