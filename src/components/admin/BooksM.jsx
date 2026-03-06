@@ -268,60 +268,60 @@ function Books() {
         <div className="border p-3 my-3 rounded-4">
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5">
             <div className="d-flex flex-wrap gap-2">
-              <button
-                className={`btn ${
-                  selectedStatus === "All"
-                    ? "fw-bold brown text-white"
-                    : "btn-light"
-                }`}
-                onClick={() => setSelectedStatus("All")}
-              >
-                All
+             <button
+               className={
+               selectedStatus === "All"
+              ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
+                 : "btn btn-light"
+                       }
+                    onClick={() => setSelectedStatus("All")}
+                >
+                         All
               </button>
 
-              <button
-                className={`btn ${
-                  selectedStatus === "available"
-                    ? "fw-bold brown text-white"
-                    : "btn-light"
-                }`}
-                onClick={() => setSelectedStatus("available")}
-              >
-                available
-              </button>
+               <button
+                   className={
+                   selectedStatus === "available"
+                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
+                   : "btn btn-light"
+                         }
+                    onClick={() => setSelectedStatus("available")}
+                  >
+                        available
+                </button>
 
-              <button
-                className={`btn ${
-                  selectedStatus === "Borrowed"
-                    ? "fw-bold brown text-white"
-                    : "btn-light"
-                }`}
-                onClick={() => setSelectedStatus("Borrowed")}
-              >
-                Borrowed
-              </button>
+                <button
+                  className={
+                   selectedStatus === "Borrowed"
+                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
+                    : "btn btn-light"
+                            }
+                   onClick={() => setSelectedStatus("Borrowed")}
+                  >
+                         Borrowed
+                </button>
 
-              <button
-                className={`btn ${
+                <button
+                  className={
                   selectedStatus === "fixing"
-                    ? "fw-bold brown text-white"
-                    : "btn-light"
-                }`}
-                onClick={() => setSelectedStatus("fixing")}
-              >
-                fixing
-              </button>
+                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
+                   : "btn btn-light"
+                         }
+                    onClick={() => setSelectedStatus("fixing")}
+                  >
+                         fixing
+                </button>
 
-              <button
-                className={`btn ${
-                  selectedStatus === "filter"
-                    ? "fw-bold brown text-white"
-                    : "btn-light"
-                }`}
-                onClick={() => setSelectedStatus("filter")}
-              >
-                filter
-              </button>
+                <button
+                     className={
+                     selectedStatus === "filter"
+                      ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
+                      : "btn btn-light"
+                        }
+                       onClick={() => setSelectedStatus("filter")}
+                    >
+                         filter
+                  </button>
             </div>
 
             <div className="position-relative" style={{ minWidth: "280px" }}>
