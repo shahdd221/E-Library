@@ -67,7 +67,7 @@ function Navbar() {
             role === "admin" && (
               <NavLink
                 className="nav-link m-1 text-white hover rounded-5 px-4"
-                to="/admin/booksM"
+                to="/admin/BooksM"
                 onClick={() => setIsopen(false)}
               >
                 Books Management

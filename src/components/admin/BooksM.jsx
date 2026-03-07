@@ -15,7 +15,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-function Books() {
+function BooksM() {
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState(null);
   const [books, setBooks] = useState([]);
@@ -401,4 +401,4 @@ function Books() {
   );
 }
 
-export default Books;
+export default BooksM;

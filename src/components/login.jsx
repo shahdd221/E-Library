@@ -31,7 +31,7 @@ function Login() {
       // الانتقال مباشرة بدون رسالة
       if (adminSnap.exists()) {
         localStorage.setItem("role", "admin");
-        navigate("/admin/booksM");
+        navigate("/admin/BooksM");
       } else {
         localStorage.setItem("role", "user");
         navigate("/home");
