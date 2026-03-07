@@ -4,10 +4,13 @@ import Login from "./components/login";
 import Layout from "./components/Layout";
 import CreateAccount from "./components/CreateAccount";
 import ForgetPassword from './components/ForgetPassword';
-import Books from './components/admin/Books';
+import BooksM from './components/admin/BooksM';
 import LayoutPage from './components/LayoutPage';
 import LibraryHome from './components/LibraryHome';
+import AdminRoute from './components/admin/AdminRoute';
+import UserRoute from './components/user/UserRoute';
 
+const role = localStorage.getItem("role");
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,8 +20,10 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <ForgetPassword /> },
       { path: "", element: <Login /> },
       { path: "/", element: <LayoutPage /> , children:[
-        { path: "admin/books", element: <Books /> },
-        { path: "home", element: <LibraryHome/>  }
+        { path: "admin/booksM", element: <AdminRoute userRole={role}>
+          <BooksM />
+        </AdminRoute> },
+        { path: "home", element: <UserRoute userRole={role}><LibraryHome/> </UserRoute> }
       
       ] }
 

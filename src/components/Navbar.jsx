@@ -35,17 +35,21 @@ function Navbar() {
           id="navbarNavAltMarkup"
         >
           <div className="navbar-nav p-3 mt-3 m-md-0 p-md-1">
-            <NavLink
+            {
+              role === "user" && (
+                <NavLink
               className="nav-link m-1 text-white hover rounded-5 px-4"
               to="/home"
               onClick={() => setIsopen(false)}
             >
               Home
             </NavLink>
+              )
+            }
 
             <NavLink
               className="nav-link m-1 text-white hover rounded-5 px-4"
-              to="admin/books"
+              to="/books"
               onClick={() => setIsopen(false)}
             >
               Books
@@ -59,14 +63,18 @@ function Navbar() {
               About
             </NavLink>
 
-          
+          {
+            role === "admin" && (
               <NavLink
                 className="nav-link m-1 text-white hover rounded-5 px-4"
-                to="/admin/books"
+                to="/admin/booksM"
                 onClick={() => setIsopen(false)}
               >
                 Books Management
               </NavLink>
+            )
+          }
+              
             
 
             <Link className='px-4 my-2 d-md-none' to="/user">

@@ -39,7 +39,7 @@ function Login() {
       });
       if (adminSnap.exists()) {
         localStorage.setItem("role", "admin");
-        navigate("/admin/books");
+        navigate("/admin/booksM");
       } else {
         localStorage.setItem("role", "user");
         navigate("/home");
