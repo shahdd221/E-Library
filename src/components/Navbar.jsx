@@ -65,13 +65,22 @@ function Navbar() {
 
           {
             role === "admin" && (
-              <NavLink
-                className="nav-link m-1 text-white hover rounded-5 px-4"
-                to="/admin/BooksM"
-                onClick={() => setIsopen(false)}
-              >
-                Books Management
-              </NavLink>
+              <>
+                <NavLink
+                  className="nav-link m-1 text-white hover rounded-5 px-4"
+                  to="/admin/BooksM"
+                  onClick={() => setIsopen(false)}
+                >
+                  Books Management
+                </NavLink>
+                <NavLink
+                  className="nav-link m-1 text-white hover rounded-5 px-4"
+                  to="/admin/BorrowingLog"
+                  onClick={() => setIsopen(false)}
+                >
+                  Borrowing Log
+                </NavLink>
+              </>
             )
           }
               

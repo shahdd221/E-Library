@@ -7,28 +7,27 @@ import ForgetPassword from './components/ForgetPassword';
 import BooksM from './components/admin/BooksM';
 import LayoutPage from './components/LayoutPage';
 import LibraryHome from './components/LibraryHome';
+import BorrowingLog from "./components/admin/BorrowingLog";
 
-
-
-const role = localStorage.getItem("role");
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/create-account", element: <CreateAccount /> },
-      { path: "/forgetPassword", element: <ForgetPassword /> },
-      { path: "", element: <Login /> },
-      { path: "/", element: <LayoutPage /> , children:[
-        { path: "/admin/BooksM", element: <BooksM />},
-        { path: "/home", element: <LibraryHome/>}
-      
-      ] }
-
+      { index: true, element: <Login /> },
+      { path: "create-account", element: <CreateAccount /> },
+      { path: "forgetPassword", element: <ForgetPassword /> },
+      {
+        element: <LayoutPage />,
+        children: [
+          { path: "home", element: <LibraryHome /> },
+          { path: "admin/BooksM", element: <BooksM /> },
+          { path: "admin/BorrowingLog", element: <BorrowingLog /> },
+        ],
+      },
     ],
   },
 ]);
-
 
 function App() {
   return (
