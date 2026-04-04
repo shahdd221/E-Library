@@ -28,7 +28,7 @@ function Login() {
       console.log("admin exists:", adminSnap.exists());
       console.log("user exists:", userSnap.exists());
 
-      // الانتقال مباشرة بدون رسالة
+    
       if (adminSnap.exists()) {
         localStorage.setItem("role", "admin");
         navigate("/admin/BooksM");
