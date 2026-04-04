@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db, storage } from "../firebase";
+import { db } from "../firebase";
 import { updateDoc } from "firebase/firestore";
 import {
   addDoc,
@@ -9,34 +9,39 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+
 function BooksM() {
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState(null);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+
+  // ✅ FIX 1: حالة الـ Edit Modal
+  const [editingBook, setEditingBook] = useState(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    author: "",
+    isbn: "",
+    category: "",
+    description: "",
+  });
 
   const booksCollection = collection(db, "books");
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedStatus, setSelectedStatus] = useState("All");
 
-    const filteredBooks = books.filter((book) => {
-      const matchesSearch =
-        book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.isbn?.toLowerCase().includes(searchTerm.toLowerCase());
+  // ✅ FIX 2: تصحيح شرط الـ Status من "الكل" إلى "All"
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch =
+      book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.isbn?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus =
-        selectedStatus === "الكل" || book.status === selectedStatus;
+    const matchesStatus =
+      selectedStatus === "All" || book.status === selectedStatus;
 
-      return matchesSearch && matchesStatus;
-    });
-
+    return matchesSearch && matchesStatus;
+  });
 
   const fetchBooks = async () => {
     try {
@@ -92,11 +97,11 @@ function BooksM() {
         category,
         description,
         coverUrl,
+        status: "available",
         createdAt: serverTimestamp(),
       });
 
       await fetchBooks();
-
       setIsOpen(false);
       setImage(null);
       e.target.reset();
@@ -107,13 +112,14 @@ function BooksM() {
       setLoading(false);
     }
   };
-  const deleteBook = async (book) => {
-    try {
-      if (book.imagePath) {
-        const imageRef = ref(storage, book.imagePath);
-        await deleteObject(imageRef);
-      }
 
+  const deleteBook = async (book) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${book.title}"?`
+    );
+    if (!confirmed) return;
+
+    try {
       await deleteDoc(doc(db, "books", book.id));
       await fetchBooks();
     } catch (error) {
@@ -121,13 +127,39 @@ function BooksM() {
       alert("Error deleting book");
     }
   };
-  const editBook = async (book, updatedData) => {
+
+  // ✅ FIX 3: فتح الـ Edit Modal وملء البيانات
+  const openEditModal = (book) => {
+    setEditingBook(book);
+    setEditForm({
+      title: book.title || "",
+      author: book.author || "",
+      isbn: book.isbn || "",
+      category: book.category || "",
+      description: book.description || "",
+    });
+  };
+
+  // ✅ FIX 3: حفظ التعديل
+  const handleEditSave = async (e) => {
+    e.preventDefault();
+    if (!editingBook) return;
     try {
-      await updateDoc(doc(db, "books", book.id), updatedData);
+      setLoading(true);
+      await updateDoc(doc(db, "books", editingBook.id), {
+        title: editForm.title,
+        author: editForm.author,
+        isbn: editForm.isbn,
+        category: editForm.category,
+        description: editForm.description,
+      });
       await fetchBooks();
+      setEditingBook(null);
     } catch (error) {
       console.log(error);
       alert("Error updating book");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,6 +180,7 @@ function BooksM() {
         </div>
       </div>
 
+      {/* Add Book Modal */}
       {isOpen && (
         <div
           className="position-fixed top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center"
@@ -161,9 +194,7 @@ function BooksM() {
             <form onSubmit={handleAddBook}>
               <div className="row">
                 <div className="col-md-6">
-                  <label htmlFor="title" className="brown">
-                    Book Title
-                  </label>
+                  <label htmlFor="title" className="brown">Book Title</label>
                   <input
                     id="title"
                     type="text"
@@ -173,11 +204,8 @@ function BooksM() {
                     required
                   />
                 </div>
-
                 <div className="col-md-6">
-                  <label htmlFor="author" className="brown">
-                    Author
-                  </label>
+                  <label htmlFor="author" className="brown">Author</label>
                   <input
                     id="author"
                     type="text"
@@ -191,23 +219,18 @@ function BooksM() {
 
               <div className="row">
                 <div className="col-md-6">
-                  <label htmlFor="isbn" className="brown">
-                    ISBN Number
-                  </label>
+                  <label htmlFor="isbn" className="brown">ISBN Number</label>
                   <input
                     id="isbn"
                     type="text"
                     name="isbn"
                     className="form-control mb-3"
-                    placeholder="978-3-16-16-148410-0"
+                    placeholder="978-3-16-148410-0"
                     required
                   />
                 </div>
-
                 <div className="col-md-6">
-                  <label htmlFor="category" className="brown">
-                    Category
-                  </label>
+                  <label htmlFor="category" className="brown">Category</label>
                   <input
                     id="category"
                     type="text"
@@ -219,9 +242,7 @@ function BooksM() {
                 </div>
               </div>
 
-              <label htmlFor="des" className="brown">
-                Description
-              </label>
+              <label htmlFor="des" className="brown">Description</label>
               <textarea
                 id="des"
                 name="Description"
@@ -230,9 +251,7 @@ function BooksM() {
                 required
               />
 
-              <label htmlFor="img" className="brown">
-                Book Cover Image
-              </label>
+              <label htmlFor="img" className="brown">Book Cover Image</label>
               <input
                 onChange={(e) => setImage(e.target.files[0])}
                 id="img"
@@ -264,71 +283,127 @@ function BooksM() {
         </div>
       )}
 
+      {/* ✅ FIX 3: Edit Book Modal */}
+      {editingBook && (
+        <div
+          className="position-fixed top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center"
+          style={{ backgroundColor: "rgba(57, 34, 10, 0.6)", zIndex: 1000 }}
+        >
+          <div className="bg-white p-5 rounded-4 shadow w-75">
+            <h1 className="fw-bold brown border-bottom pb-3 mb-3">
+              Edit Book
+            </h1>
+
+            <form onSubmit={handleEditSave}>
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="brown">Book Title</label>
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    value={editForm.title}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, title: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="brown">Author</label>
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    value={editForm.author}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, author: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="brown">ISBN Number</label>
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    value={editForm.isbn}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, isbn: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="brown">Category</label>
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    value={editForm.category}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, category: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+              </div>
+
+              <label className="brown">Description</label>
+              <textarea
+                className="form-control mb-3"
+                value={editForm.description}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, description: e.target.value })
+                }
+                required
+              />
+
+              <div className="d-flex gap-2 mt-4 justify-content-end">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="p-2 rounded-3 border-0 text-white fw-bold bg-brown hover col-2"
+                >
+                  {loading ? "Saving..." : "Save"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary col-2"
+                  onClick={() => setEditingBook(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="container p-3">
         <div className="border p-3 my-3 rounded-4">
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5">
             <div className="d-flex flex-wrap gap-2">
-             <button
-               className={
-               selectedStatus === "All"
-              ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
-                 : "btn btn-light"
-                       }
-                    onClick={() => setSelectedStatus("All")}
-                >
-                         All
-              </button>
-
-               <button
-                   className={
-                   selectedStatus === "available"
-                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
-                   : "btn btn-light"
-                         }
-                    onClick={() => setSelectedStatus("available")}
-                  >
-                        available
-                </button>
-
+              {["All", "available", "Borrowed", "fixing"].map((status) => (
                 <button
+                  key={status}
                   className={
-                   selectedStatus === "Borrowed"
-                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
-                    : "btn btn-light"
-                            }
-                   onClick={() => setSelectedStatus("Borrowed")}
-                  >
-                         Borrowed
-                </button>
-
-                <button
-                  className={
-                  selectedStatus === "fixing"
-                    ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
-                   : "btn btn-light"
-                         }
-                    onClick={() => setSelectedStatus("fixing")}
-                  >
-                         fixing
-                </button>
-
-                <button
-                     className={
-                     selectedStatus === "filter"
+                    selectedStatus === status
                       ? "p-2 rounded-3 border-0 text-white fw-bold bg-brown shadow hover"
                       : "btn btn-light"
-                        }
-                       onClick={() => setSelectedStatus("filter")}
-                    >
-                         filter
-                  </button>
+                  }
+                  onClick={() => setSelectedStatus(status)}
+                >
+                  {status}
+                </button>
+              ))}
             </div>
 
             <div className="position-relative" style={{ minWidth: "280px" }}>
               <input
                 type="text"
                 className="form-control pe-5"
-                placeholder="search with book name,aurthor,or catagory..."
+                placeholder="Search by book name, author, or ISBN..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -341,9 +416,15 @@ function BooksM() {
 
           <div>
             {books.length === 0 ? (
-              <div className="text-center py-4 text-gray-500">
+              <div className="text-center py-4">
                 <i className="fa-solid fa-book mb-3 brown"></i>
                 <p className="font-medium brown">No Books Added</p>
+              </div>
+            ) : filteredBooks.length === 0 ? (
+              // ✅ حالة: في كتب لكن الفلتر مش لاقي نتايج
+              <div className="text-center py-4">
+                <i className="fa-solid fa-magnifying-glass mb-3 brown"></i>
+                <p className="font-medium brown">No books match your search</p>
               </div>
             ) : (
               <div>
@@ -355,7 +436,8 @@ function BooksM() {
                   <div className="col">PROCEDURES</div>
                 </div>
 
-                {books.map((book) => (
+                {/* ✅ FIX 2: استخدام filteredBooks بدل books */}
+                {filteredBooks.map((book) => (
                   <div
                     key={book.id}
                     className="card p-3 shadow mb-3 d-flex flex-row align-items-center text-center"
@@ -364,7 +446,7 @@ function BooksM() {
                       <div className="rounded-3">
                         <img
                           src={book.coverUrl}
-                          //alt={book.title}
+                          alt={book.title}
                           style={{ width: "50px" }}
                         />
                       </div>
@@ -373,11 +455,12 @@ function BooksM() {
 
                     <p className="m-0 col">{book.author}</p>
                     <p className="m-0 col">{book.category}</p>
-                    <p className="m-0 col">{book.status}</p>
+                    <p className="m-0 col">{book.status || "—"}</p>
 
                     <div className="col text-center d-flex justify-content-center gap-3">
+                      {/* ✅ FIX 3: فتح الـ Edit Modal */}
                       <button
-                        onClick={() => editBook(book)}
+                        onClick={() => openEditModal(book)}
                         className="bg-transparent border-0"
                       >
                         <i className="fa-solid fa-pen text-primary"></i>
