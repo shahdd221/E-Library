@@ -64,13 +64,22 @@ function Navbar() {
         >
           <div className="navbar-nav p-3 mt-3 m-md-0 p-md-1">
             {role === "user" && (
-              <NavLink
-                className="nav-link m-1 text-white hover rounded-5 px-4"
-                to="/home"
-                onClick={() => setIsopen(false)}
-              >
-                Home
-              </NavLink>
+              <>
+                <NavLink
+                  className="nav-link m-1 text-white hover rounded-5 px-4"
+                  to="/home"
+                  onClick={() => setIsopen(false)}
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  className="nav-link m-1 text-white hover rounded-5 px-4"
+                  to="/my-borrowed-books"
+                  onClick={() => setIsopen(false)}
+                >
+                  My Borrowed Books
+                </NavLink>
+              </>
             )}
 
             <NavLink

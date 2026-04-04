@@ -6,7 +6,7 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
+  onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -43,21 +43,19 @@ function BooksM() {
     return matchesSearch && matchesStatus;
   });
 
-  const fetchBooks = async () => {
-    try {
-      const data = await getDocs(booksCollection);
-      const booksList = data.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBooks(booksList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchBooks();
+    const unsub = onSnapshot(
+      booksCollection,
+      (snapshot) => {
+        const booksList = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
+        setBooks(booksList);
+      },
+      (error) => console.error("books listener:", error),
+    );
+    return () => unsub();
   }, []);
 
   const handleAddBook = async (e) => {
@@ -101,7 +99,6 @@ function BooksM() {
         createdAt: serverTimestamp(),
       });
 
-      await fetchBooks();
       setIsOpen(false);
       setImage(null);
       e.target.reset();
@@ -121,7 +118,6 @@ function BooksM() {
 
     try {
       await deleteDoc(doc(db, "books", book.id));
-      await fetchBooks();
     } catch (error) {
       console.log(error);
       alert("Error deleting book");
@@ -153,7 +149,6 @@ function BooksM() {
         category: editForm.category,
         description: editForm.description,
       });
-      await fetchBooks();
       setEditingBook(null);
     } catch (error) {
       console.log(error);

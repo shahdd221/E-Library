@@ -1,23 +1,40 @@
-import { useState } from "react";
-
-const initialLoans = [];
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 
 const statusStyle = {
   Overdue: { background: "#FEE2E2", color: "#DC2626" },
   Active: { background: "#DBEAFE", color: "#2563EB" },
   Returned: { background: "#D1FAE5", color: "#059669" },
   Pending: { background: "#FEF3C7", color: "#B45309" },
+  Rejected: { background: "#F3F4F6", color: "#6B7280" },
 };
 
-function calcDueDate() {
-  const d = new Date();
+function dueDateFromLoanStart(loanDateStr) {
+  if (!loanDateStr || loanDateStr === "—") {
+    const d = new Date();
+    d.setDate(d.getDate() + 14);
+    return d.toISOString().split("T")[0];
+  }
+  const d = new Date(loanDateStr + "T12:00:00");
+  if (Number.isNaN(d.getTime())) {
+    const fallback = new Date();
+    fallback.setDate(fallback.getDate() + 14);
+    return fallback.toISOString().split("T")[0];
+  }
   d.setDate(d.getDate() + 14);
   return d.toISOString().split("T")[0];
 }
 
 export default function BorrowingLog() {
   const [activeTab, setActiveTab] = useState("All");
-  const [loans, setLoans] = useState(initialLoans);
+  const [loans, setLoans] = useState([]);
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState(null);
 
@@ -26,34 +43,86 @@ export default function BorrowingLog() {
     setTimeout(() => setToast(null), 2500);
   };
 
+  useEffect(() => {
+    const unsub = onSnapshot(
+      collection(db, "loans"),
+      (snap) => {
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        list.sort((a, b) => {
+          const ta = a.createdAt?.toMillis?.() ?? 0;
+          const tb = b.createdAt?.toMillis?.() ?? 0;
+          return tb - ta;
+        });
+        setLoans(list);
+      },
+      (err) => console.error("BorrowingLog:", err),
+    );
+    return () => unsub();
+  }, []);
+
   const filtered = loans.filter((l) => {
-    const matchTab =
-      activeTab === "All" ? l.status !== "Pending" : l.status === activeTab;
+    const matchTab = activeTab === "All" || l.status === activeTab;
+    const q = search.toLowerCase();
     const matchSearch =
-      l.borrower.toLowerCase().includes(search.toLowerCase()) ||
-      l.book.toLowerCase().includes(search.toLowerCase());
+      (l.borrower || "").toLowerCase().includes(q) ||
+      (l.book || "").toLowerCase().includes(q);
     return matchTab && matchSearch;
   });
 
-  const handleReceive = (id) => {
-    setLoans((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, status: "Returned" } : l)),
-    );
-    showToast("✅ Book marked as Returned", "#059669");
+  const handleReceive = async (id) => {
+    const loan = loans.find((x) => x.id === id);
+    try {
+      await updateDoc(doc(db, "loans", id), { status: "Returned" });
+      if (loan?.bookId) {
+        await updateDoc(doc(db, "books", loan.bookId), {
+          status: "available",
+        });
+      }
+      showToast("✅ Book marked as Returned", "#059669");
+    } catch (e) {
+      console.error(e);
+      showToast("Failed to update", "#DC2626");
+    }
   };
 
-  const handleAccept = (id) => {
-    setLoans((prev) =>
-      prev.map((l) =>
-        l.id === id ? { ...l, status: "Active", dueDate: calcDueDate() } : l,
-      ),
-    );
-    showToast("✅ Request Accepted — Loan is now Active", "#2563EB");
+  const handleAccept = async (id) => {
+    const loan = loans.find((x) => x.id === id);
+    const due = dueDateFromLoanStart(loan?.loanDate);
+    try {
+      await updateDoc(doc(db, "loans", id), {
+        status: "Active",
+        dueDate: due,
+      });
+      if (loan?.bookId) {
+        await updateDoc(doc(db, "books", loan.bookId), {
+          status: "Borrowed",
+        });
+      }
+      showToast("✅ Request Accepted — Loan is now Active", "#2563EB");
+    } catch (e) {
+      console.error(e);
+      showToast("Failed to accept", "#DC2626");
+    }
   };
 
-  const handleReject = (id) => {
-    setLoans((prev) => prev.filter((l) => l.id !== id));
-    showToast("❌ Request Rejected", "#DC2626");
+  const handleReject = async (id) => {
+    try {
+      await updateDoc(doc(db, "loans", id), { status: "Rejected" });
+      showToast("❌ Request Rejected (student notified)", "#DC2626");
+    } catch (e) {
+      console.error(e);
+      showToast("Failed to reject", "#DC2626");
+    }
+  };
+
+  const handleRemoveLoan = async (id) => {
+    try {
+      await deleteDoc(doc(db, "loans", id));
+      showToast("Removed from log", "#6B7280");
+    } catch (e) {
+      console.error(e);
+      showToast("Failed to remove", "#DC2626");
+    }
   };
 
   const stats = {
@@ -61,9 +130,10 @@ export default function BorrowingLog() {
     overdue: loans.filter((l) => l.status === "Overdue").length,
     returned: loans.filter((l) => l.status === "Returned").length,
     pending: loans.filter((l) => l.status === "Pending").length,
+    rejected: loans.filter((l) => l.status === "Rejected").length,
   };
 
-  const tabs = ["All", "Active", "Overdue", "Returned", "Pending"];
+  const tabs = ["All", "Active", "Overdue", "Returned", "Pending", "Rejected"];
 
   return (
     <div style={s.page}>
@@ -78,7 +148,9 @@ export default function BorrowingLog() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button style={s.registerBtn}>+ Register New Loan</button>
+        <button type="button" style={s.registerBtn}>
+          + Register New Loan
+        </button>
       </div>
 
       <h1 style={s.pageTitle}>Lending Operations Log</h1>
@@ -86,7 +158,6 @@ export default function BorrowingLog() {
         Track and manage all current and archived book loans.
       </p>
 
-      {/* Stats */}
       <div style={s.statsRow}>
         <div style={s.statCard}>
           <div>
@@ -106,7 +177,7 @@ export default function BorrowingLog() {
         </div>
         <div style={s.statCard}>
           <div>
-            <div style={s.statLabel}>Returned Today</div>
+            <div style={s.statLabel}>Returned</div>
             <div style={{ ...s.statNumber, color: "#059669" }}>
               {stats.returned}
             </div>
@@ -115,7 +186,7 @@ export default function BorrowingLog() {
         </div>
         <div style={{ ...s.statCard, border: "2px solid #FDE68A" }}>
           <div>
-            <div style={s.statLabel}>Pending Requests</div>
+            <div style={s.statLabel}>Pending</div>
             <div style={{ ...s.statNumber, color: "#B45309" }}>
               {stats.pending}
             </div>
@@ -124,12 +195,12 @@ export default function BorrowingLog() {
         </div>
       </div>
 
-      {/* Table */}
       <div style={s.tableCard}>
         <div style={s.tabs}>
           {tabs.map((tab) => (
             <button
               key={tab}
+              type="button"
               style={activeTab === tab ? s.tabActive : s.tab}
               onClick={(e) => {
                 setActiveTab(tab);
@@ -140,6 +211,11 @@ export default function BorrowingLog() {
               {tab === "Pending" && stats.pending > 0 && (
                 <span style={s.tabBadge}>{stats.pending}</span>
               )}
+              {tab === "Rejected" && stats.rejected > 0 && (
+                <span style={{ ...s.tabBadge, background: "#6B7280" }}>
+                  {stats.rejected}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -148,7 +224,7 @@ export default function BorrowingLog() {
           <div style={s.pendingBanner}>
             ⏳ These requests are awaiting your approval — press{" "}
             <strong>Accept</strong> to approve or <strong>Reject</strong> to
-            decline.
+            decline (the student will be notified).
           </div>
         )}
 
@@ -188,8 +264,13 @@ export default function BorrowingLog() {
               <tr key={loan.id} style={s.tr}>
                 <td style={s.td}>
                   <div style={s.borrowerCell}>
-                    <div style={{ ...s.avatar, background: loan.color }}>
-                      {loan.initials}
+                    <div
+                      style={{
+                        ...s.avatar,
+                        background: loan.color || "#6B7280",
+                      }}
+                    >
+                      {loan.initials || "?"}
                     </div>
                     <span style={loan.status === "Returned" ? s.strike : {}}>
                       {loan.borrower}
@@ -208,27 +289,38 @@ export default function BorrowingLog() {
                 <td
                   style={{
                     ...s.td,
-                    color: loan.status === "Overdue" ? "#DC2626" : "inherit",
+                    color:
+                      loan.status === "Overdue" ? "#DC2626" : "inherit",
                     fontWeight: loan.status === "Overdue" ? 600 : 400,
                   }}
                 >
                   {loan.dueDate}
                 </td>
                 <td style={s.td}>
-                  <span style={{ ...s.badge, ...statusStyle[loan.status] }}>
-                    {loan.status}
+                  <span
+                    style={{
+                      ...s.badge,
+                      ...(statusStyle[loan.status] || {
+                        background: "#F3F4F6",
+                        color: "#374151",
+                      }),
+                    }}
+                  >
+                    {loan.status || "—"}
                   </span>
                 </td>
                 <td style={s.td}>
                   {loan.status === "Pending" && (
                     <div style={s.actionBtns}>
                       <button
+                        type="button"
                         style={s.acceptBtn}
                         onClick={() => handleAccept(loan.id)}
                       >
                         ✓ Accept
                       </button>
                       <button
+                        type="button"
                         style={s.rejectBtn}
                         onClick={() => handleReject(loan.id)}
                       >
@@ -238,8 +330,11 @@ export default function BorrowingLog() {
                   )}
                   {(loan.status === "Active" || loan.status === "Overdue") && (
                     <div style={s.actionBtns}>
-                      <button style={s.extendBtn}>Extend</button>
+                      <button type="button" style={s.extendBtn}>
+                        Extend
+                      </button>
                       <button
+                        type="button"
                         style={s.receiveBtn}
                         onClick={() => handleReceive(loan.id)}
                       >
@@ -249,6 +344,15 @@ export default function BorrowingLog() {
                   )}
                   {loan.status === "Returned" && (
                     <span style={{ color: "#059669", fontSize: 20 }}>✓</span>
+                  )}
+                  {loan.status === "Rejected" && (
+                    <button
+                      type="button"
+                      style={s.extendBtn}
+                      onClick={() => handleRemoveLoan(loan.id)}
+                    >
+                      Remove
+                    </button>
                   )}
                 </td>
               </tr>
@@ -264,6 +368,7 @@ export default function BorrowingLog() {
             {["‹", 1, 2, 3, "›"].map((p, i) => (
               <button
                 key={i}
+                type="button"
                 style={
                   p === 1 ? { ...s.pageBtn, ...s.pageBtnActive } : s.pageBtn
                 }
@@ -275,7 +380,6 @@ export default function BorrowingLog() {
         </div>
       </div>
 
-      {/* Info cards */}
       <div style={s.infoRow}>
         <div style={s.infoCard}>
           <span style={s.infoIcon}>⚠️</span>
@@ -385,6 +489,7 @@ const s = {
     gap: 4,
     marginBottom: 20,
     borderBottom: "1px solid #E5E7EB",
+    flexWrap: "wrap",
   },
   tab: {
     background: "none",
