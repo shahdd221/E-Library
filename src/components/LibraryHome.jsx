@@ -356,7 +356,7 @@ function LibraryHome() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn text-white fw-bold bg-brown px-4"
+                  className="p-2 py-3 rounded-2 border-0 text-white fw-bold bg-brown shadow hover"
                 >
                   {submitting ? "Sending..." : "Send Request"}
                 </button>
