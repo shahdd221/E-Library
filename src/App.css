@@ -180,3 +180,78 @@ label {
 .view-collection:active{
     background-color:rgba(99,58,25,0.2);
 }
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none;
+  display: block;
+  margin: 0 auto;
+}
+
+.photo-btn {
+  margin-top: 10px;
+  background: #6b4f3f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+   width: auto;          /* 👈 مهم */
+  display: inline-flex; /* ثابت */
+  align-self: center;
+}
+
+.photo-btn:hover {
+  background: #543a2b;
+  transform: scale(1.05);
+}
+
+.delete-photo-btn {
+  background: transparent;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+   width: auto;          /* 👈 مهم */
+  display: inline-flex; /* ثابت */
+  align-self: center;
+}
+
+.delete-photo-btn:hover {
+  background: #c0392b;
+  color: white;
+  transform: scale(1.05);
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #6b4f3f, #8b5e3c);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+   width: auto;          /* 👈 مهم */
+  display: inline-flex; /* ثابت */
+  align-self: center;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+}

@@ -9,6 +9,7 @@ import LayoutPage from './components/LayoutPage';
 import LibraryHome from './components/LibraryHome';
 import MyBorrowedBooks from "./components/MyBorrowedBooks";
 import BorrowingLog from "./components/admin/BorrowingLog";
+import Profile from "./components/Profile";
 
 const router = createBrowserRouter([
   {
@@ -18,11 +19,16 @@ const router = createBrowserRouter([
       { index: true, element: <Login /> },
       { path: "create-account", element: <CreateAccount /> },
       { path: "forgetPassword", element: <ForgetPassword /> },
+
       {
         element: <LayoutPage />,
         children: [
           { path: "home", element: <LibraryHome /> },
           { path: "my-borrowed-books", element: <MyBorrowedBooks /> },
+
+         
+          { path: "profile", element: <Profile /> },
+
           { path: "admin/BooksM", element: <BooksM /> },
           { path: "admin/BorrowingLog", element: <BorrowingLog /> },
         ],
@@ -32,11 +38,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
